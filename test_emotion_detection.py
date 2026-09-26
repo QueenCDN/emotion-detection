@@ -1,103 +1,22 @@
-"""Unit tests for EmotionDetection module."""
+from EmotionDetection.emotion_detection import emotion_detector
 import unittest
-from unittest.mock import patch
-from EmotionDetection import emotion_detector
 
+class TestEmotionDetection(unittest.TestCase):
+    def test_emotion_detector(self):
+        result_1 = emotion_detector('I am glad this happened')
+        self.assertEqual(result_1['dominant_emotion'], 'joy')
 
-class TestEmotionDetector(unittest.TestCase):
-    """Test cases for emotion_detector function."""
+        result_2 = emotion_detector('I am really mad about this')
+        self.assertEqual(result_2['dominant_emotion'], 'anger')
 
-    @patch('EmotionDetection.emotion_detection.requests.post')
-    def test_emotion_detector_joy(self, mock_post):
-        """Test detection of joy emotion."""
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.json.return_value = {
-            "emotionPredictions": [
-                {
-                    "emotion": {
-                        "anger": 0.0,
-                        "disgust": 0.0,
-                        "fear": 0.0,
-                        "joy": 0.95,
-                        "sadness": 0.05
-                    }
-                }
-            ]
-        }
-        result = emotion_detector("I am so happy and joyful")
-        self.assertEqual(result["dominant_emotion"], "joy")
-        self.assertIsNotNone(result["joy"])
+        result_3 = emotion_detector('I feel disgusted just hearing about this')
+        self.assertEqual(result_3['dominant_emotion'], 'disgust')
 
-    @patch('EmotionDetection.emotion_detection.requests.post')
-    def test_emotion_detector_anger(self, mock_post):
-        """Test detection of anger emotion."""
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.json.return_value = {
-            "emotionPredictions": [
-                {
-                    "emotion": {
-                        "anger": 0.9,
-                        "disgust": 0.0,
-                        "fear": 0.05,
-                        "joy": 0.0,
-                        "sadness": 0.05
-                    }
-                }
-            ]
-        }
-        result = emotion_detector("I am really angry and furious")
-        self.assertEqual(result["dominant_emotion"], "anger")
-        self.assertIsNotNone(result["anger"])
+        result_4 = emotion_detector('I am so sad about this')
+        self.assertEqual(result_4['dominant_emotion'], 'sadness')
 
-    @patch('EmotionDetection.emotion_detection.requests.post')
-    def test_emotion_detector_fear(self, mock_post):
-        """Test detection of fear emotion."""
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.json.return_value = {
-            "emotionPredictions": [
-                {
-                    "emotion": {
-                        "anger": 0.0,
-                        "disgust": 0.0,
-                        "fear": 0.92,
-                        "joy": 0.0,
-                        "sadness": 0.08
-                    }
-                }
-            ]
-        }
-        result = emotion_detector("I am scared and afraid")
-        self.assertEqual(result["dominant_emotion"], "fear")
-        self.assertIsNotNone(result["fear"])
+        result_5 = emotion_detector('I am really afraid that this will happen')
+        self.assertEqual(result_5['dominant_emotion'], 'fear')
 
-    @patch('EmotionDetection.emotion_detection.requests.post')
-    def test_emotion_detector_sadness(self, mock_post):
-        """Test detection of sadness emotion."""
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.json.return_value = {
-            "emotionPredictions": [
-                {
-                    "emotion": {
-                        "anger": 0.0,
-                        "disgust": 0.0,
-                        "fear": 0.0,
-                        "joy": 0.0,
-                        "sadness": 1.0
-                    }
-                }
-            ]
-        }
-        result = emotion_detector("I am sad and depressed")
-        self.assertEqual(result["dominant_emotion"], "sadness")
-        self.assertIsNotNone(result["sadness"])
-
-    @patch('EmotionDetection.emotion_detection.requests.post')
-    def test_emotion_detector_empty_string(self, mock_post):
-        """Test with empty string input."""
-        mock_post.return_value.status_code = 400
-        result = emotion_detector("")
-        self.assertIsNone(result["dominant_emotion"])
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
